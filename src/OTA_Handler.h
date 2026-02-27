@@ -18,6 +18,7 @@
 // Firmware data keys.
 char constexpr FW_STATE_DOWNLOADING[] = "DOWNLOADING";
 char constexpr FW_STATE_DOWNLOADED[] = "DOWNLOADED";
+char constexpr FW_STATE_VERIFIED[] = "VERIFIED";
 char constexpr FW_STATE_UPDATING[] = "UPDATING";
 char constexpr FW_STATE_FAILED[] = "FAILED";
 char constexpr FW_STATE_UPDATED[] = "UPDATED";
@@ -232,6 +233,8 @@ class OTA_Handler {
     #if THINGSBOARD_ENABLE_DEBUG
         Logger::printfln(CHECKSUM_VERIFICATION_SUCCESS);
     #endif // THINGSBOARD_ENABLE_DEBUG
+
+        (void)m_send_fw_state_callback.Call_Callback(FW_STATE_VERIFIED, "");
 
         if (!m_fw_updater->end()) {
             Logger::printfln(ERROR_UPDATE_END);
