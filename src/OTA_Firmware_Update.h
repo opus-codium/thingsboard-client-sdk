@@ -339,13 +339,13 @@ class OTA_Firmware_Update : public IAPI_Implementation {
         }
         // If firmware version and title is the same, we do not initiate an update, because we expect the type of binary to be the same one we are currently using
         // and therefore updating would be useless as we have already updated previously
-        else if (strncmp(curr_fw_title, fw_title, strlen(curr_fw_title)) == 0 && strncmp(curr_fw_version, fw_version, strlen(curr_fw_version)) == 0) {
+        else if (strlen(curr_fw_title) == strlen(fw_title) && strncmp(curr_fw_title, fw_title, strlen(curr_fw_title)) == 0 && strlen(curr_fw_version) == strlen(fw_version) && strncmp(curr_fw_version, fw_version, strlen(curr_fw_version)) == 0) {
             Firmware_Send_State(FW_STATE_UPDATED);
             return;
         }
         // If firmware title is not the same, we do not initiate an update, because we expect the binary to be for another type of device
         // and downloading it on this device could possibly cause hardware issues or even destroy the device
-        else if (strncmp(curr_fw_title, fw_title, strlen(curr_fw_title)) != 0) {
+        else if (strlen(curr_fw_title) != strlen(fw_title) || strncmp(curr_fw_title, fw_title, strlen(curr_fw_title)) != 0) {
             char message[strlen(FW_NOT_FOR_US) + strlen(fw_title) + strlen(curr_fw_title) + 3] = {};
             (void)snprintf(message, sizeof(message), FW_NOT_FOR_US, fw_title, curr_fw_title);
             Logger::printfln(message);
