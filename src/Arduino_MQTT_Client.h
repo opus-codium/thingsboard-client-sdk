@@ -53,6 +53,12 @@ class Arduino_MQTT_Client : public IMQTT_Client {
 
     bool connected() override;
 
+    MQTT_Connection_State get_connection_state() override;
+
+    MQTT_Connection_Error get_last_connection_error() override;
+
+    void set_connection_state_changed_callback(Callback<void, MQTT_Connection_State, MQTT_Connection_Error>::function callback) override;
+
 #if THINGSBOARD_ENABLE_STREAM_UTILS
 
     bool begin_publish(char const * topic, size_t const & length) override;
@@ -70,8 +76,17 @@ class Arduino_MQTT_Client : public IMQTT_Client {
 #endif // THINGSBOARD_ENABLE_STREAM_UTILS
 
   private:
-    Callback<void> m_connected_callback = {}; // Callback that will be called as soon as the mqtt client has connected
-    PubSubClient   m_mqtt_client = {};        // Underlying MQTT client instance used to send data
+    MQTT_Connection_Error connect_mqtt_client(char const * client_id, char const * user_name, char const * password);
+
+    /// @brief Updates the interal connection state and informs the subscribed subject, about changes to the internal state
+    /// @param new_state New state the connection to the MQTT broker is in now and the subject should be informed about
+    void update_connection_state(MQTT_Connection_State new_state);
+
+    MQTT_Connection_State                                        m_connection_state = {};                  // Current connection state to the MQTT broker
+    MQTT_Connection_Error                                        m_last_connection_error = {};             // Last error that occured while trying to establish a connection to the MQTT broker
+    Callback<void, MQTT_Connection_State, MQTT_Connection_Error> m_connection_state_changed_callback = {}; // Callback that will be called as soon as the mqtt client connection changes
+    Callback<void>                                               m_connected_callback = {};                // Callback that will be called as soon as the mqtt client has connected
+    PubSubClient                                                 m_mqtt_client = {};                       // Underlying MQTT client instance used to send data
 };
 
 #endif // ARDUINO
