@@ -369,6 +369,8 @@ For that a `class` needs to inherit the `API_Implemenatation` class and `overrid
 
 class Custom_API_Implementation : public IAPI_Implementation {
   public:
+    ~Custom_API_Implementation() override = default;
+
     API_Process_Type Get_Process_Type() override {
         return API_Process_Type::JSON;
     }
@@ -454,6 +456,10 @@ For that a `class` needs to inherit the `IUpdater` interface and `override` the 
 
 class Custom_Updater : public IUpdater {
   public:
+    ~Custom_Updater() override {
+        reset();
+    }
+
     bool begin(size_t const & firmware_size) override {
         return true;
     }
@@ -499,6 +505,8 @@ For that a `class` needs to inherit the `IHTTP_Client` interface and `override` 
 
 class Custom_HTTP_Client : public IHTTP_Client {
   public:
+    ~Custom_HTTP_Client() override = default;
+
     void set_keep_alive(bool keep_alive) override {
         // Nothing to do
     }
@@ -567,6 +575,8 @@ For that a `class` needs to inherit the `IMQTT_Client` interface and `override` 
 
 class Custom_MQTT_Client : public IMQTT_Client {
   public:
+    ~Custom_MQTT_Client() override = default;
+
     void set_data_callback(Callback<void, char *, uint8_t *, unsigned int>::function callback) override {
         // Nothing to do
     }
