@@ -436,8 +436,10 @@ private:
 #endif // THINGSBOARD_ENABLE_DEBUG
         switch (event_id) {
             case esp_mqtt_event_id_t::MQTT_EVENT_CONNECTED:
-                m_connected_callback.Call_Callback();
+                // Update the connection state before informing the subscribed subject, because the connected callback
+                // resubscribes permanent topics and subscribe() bails out early if the state does not report connected yet
                 update_connection_state(MQTT_Connection_State::CONNECTED);
+                m_connected_callback.Call_Callback();
                 break;
             case esp_mqtt_event_id_t::MQTT_EVENT_DISCONNECTED:
                 update_connection_state(MQTT_Connection_State::DISCONNECTED);
